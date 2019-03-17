@@ -1,0 +1,863 @@
+\documentclass{meta}
+\usepackage{amsmath,amssymb}
+
+\usepackage{graphicx}
+
+\usepackage{tikz,tkz-tab}
+
+\def\N{{\mathcal{N}}}
+\def\NN{{\mathbb{N}}}
+\def\ZZ{{\mathbb{Z}}}
+\def\RR{{\mathbb{R}}}
+\def\un{{\rm{1\!\!1}}}
+\def\CC{{\mathcal{C}}}
+\def\HH{{\mathcal{H}}}
+\def\UU{{\mathcal{U}}}
+\def\II{{\mathcal{I}}}
+\def\JJ{{\mathcal{J}}}
+\def\TT{{\mathcal{T}}}
+\def\PP{{\mathcal{P}}}
+\def\SS{{\mathcal{S}}}
+\def\WW{{\mathcal{W}}}
+\def\KK{{\mathcal{K}}}
+\def\MM{{\mathcal{M}}}
+
+\newtheorem{mydef}{Definition}
+
+ \newtheorem{prop}{Proposition}
+ \newtheorem{conj}{Conjecture}
+ 
+
+
+\begin{document}
+
+
+\pagestyle{headings}
+
+\mainmatter
+
+\title{TER - Clustering Algorithms in a 2-dimensional Pareto Front}
+
+% Title
+\titlerunning{TER - Clustering Algorithms in a 2-dimensional Pareto Front}
+
+% Title for odd pages
+\author{ HE Yuru and XU Yuetian }
+
+% Authors for the top of the even pages
+\authorrunning{HE Yuru ,XU Yuetian}
+
+\institute{Université Paris-Sud, Informatique Master1 \\
+\email{yuru.he@u-psud.fr,yuetian.xu@u-psud.fr}}
+
+\maketitle
+
+%\maketitle
+\begin{abstract}
+This paper is motivated by a real life application of multi-objective optimization without preference.
+Having many incomparable solutions with Pareto optimality, 
+the motivation is to select a small number of representative solutions for decision makers.This paper proves that these clustering problems can be solved to optimality with a unified dynamic programming algorithm. 
+The clustering measures is investigated in this paper for the $2$-dimensional case
+using the specific property that the points to cluster are Pareto optimal in $\RR^2$.
+
+\end{abstract}
+
+\noindent{\textbf{Keywords}:
+Clustering algorithms; Pareto frontier; 
+dynamic programming; matheuristics }
+
+
+\section{Problem Description}
+
+Clustering is a statistical analysis method used to organize raw data into homogeneous silos. Within each cluster, the data is grouped according to a common characteristic. The scheduling tool is an algorithm that measures the proximity between each element based on defined criteria. 
+
+In this paper, the representativity measure comes from clustering algorithms, partitioning the N elements into K subsets with a maximal similarity, and giving a representative (i.e. central) element of the optimal clusters.
+
+There are five clustering measures mentioned in this paper: $k$-means,  $k$-medoids, $k$-median, discrete $k$-center,continuous  $k$-center.
+
+$k$-means is a simple and effective measure.In each cluster, there is an averaged center called centroids .It clustering minimizes the sum of squared distance from each item to its nearest averaged center.
+
+For $k$-medoids,in each cluster, there is a medoid, which is a real data item from the data set.$k$-medoids clustering minimizes the sum of squared distance from each item to its nearest medoids.
+
+For $k$-median ,in each cluster, there is a median.$k$-median clustering minimizes the sum of distance from each item to its nearest median.
+
+For $k$-center, in each cluster, there is a cluster center.$k$-center clustering minimizes the maximum distance from each item to its nearest cluster centers.
+
+Industrial applications of Pareto Front in multi-objective optimization: system engineering, design of industrial systems.In the case of dimension 2, minimizing 2 objectives, we can define Pareto fronts more easily.
+
+The previous problems are NP-hard in general in  $\RR^2$.
+Being in a Pareto Front, it implies a specilic property:
+Property (Interval clustering is optimal) For the previous clustering problems, optimal solutions exist using only clusters 
+%公式
+Computations of ci,i0 = f (Ci,i0) are polynomial It implies the existence of a Dynamic Programming (DP) algorithm solvable in polynomial time.
+
+
+\section{Problem statement and notations}
+
+%In this section, we define the properties of a Pareto Frontier,
+
+%\subsection{Pareto frontier}
+
+%Pareto front propriety, non dominated points
+
+
+
+We suppose in this paper having a set $E=\{x_1,\dots, x_N\}$ of $N$ elements of $\RR^2$, %fulfilling hypothesis (\ref{hypoNonDominated})
+such that for all $ i\neq j$, $x_i \phantom{0} \mathcal{I} \phantom{0} x_j$  
+% \begin{equation}
+% \forall i\neq j, \hskip 1cm x_i \mathcal{I} x_j \label{hypoNonDominated}
+% \end{equation}
+defining the binary relations $\mathcal{I},\prec $  for all $ y=(y^1,y^2),z=(z^1,z^2) \in \RR^2$ with:
+\begin{eqnarray}
+y \phantom{1}\mathcal{I}\phantom{1} z  & \Longleftrightarrow  &y \prec z  \phantom{2} \mbox{or} \phantom{2}  z \prec y \\
+ y \prec z  & \Longleftrightarrow  & y^1< z^1 \phantom{2} \mbox{and}\phantom{2} y^2> z^2
+\end{eqnarray}
+
+
+
+% \begin{equation}
+% %\forall y=(y^1,y^2),z=(z^1,z^2) \in \RR^2, \phantom{2}  
+% y \mathcal{I} z  \Longleftrightarrow  y \prec z  \phantom{2} 
+% \mbox{or} z \prec y 
+% \end{equation}
+% \begin{equation}
+% %\forall y=(y^1,y^2),z=(z^1,z^2) \in \RR^2, \phantom{2}  
+% y \prec z  \Longleftrightarrow  \left(y^1< z^1 \phantom{1} \mbox{and}\phantom{1} y^2> z^2\right)
+% \end{equation}
+
+
+
+% 
+% 
+% \begin{definition}[Set of non-Dominated points in  $\RR^2$]
+% A point $(x^1,x^2) \in E$ is denoted \emph{non dominated point} if and only if:
+% $$\forall (y^1,y^2) \in E, \phantom{3} x^1<y^1 \Longrightarrow x^2>y^2$$
+% \end{definition}
+% 
+% 
+% \begin{definition}
+%  A point $(x^1,x^2) \in E$ is denoted \emph{non dominated point} if and only if:
+% $$\forall (y^1,y^2) \in E, \phantom{3} x^1<y^1 \Longrightarrow x^2>y^2$$
+% \end{definition}
+This property  is verified in the applicative context, $E$ being the solution of a bi-objective optimization problem without preference.
+This applies for 
+exact approaches or population meta-heuristics like evolutionary algorithms and others \cite{talbi2012multi}.
+
+
+% \begin{prop}[Total order]\label{reord}
+% Points $(x_i)$ can be indexed such that:
+% \begin{equation}
+% \forall (i_1,i_2) \in [\![1;n]\!]^2, \phantom{3} i_1<i_2 \Longrightarrow x^1_{i_1} < x^1_{i_2} \phantom{2} \mbox{ and } \phantom{2} x^2_{i_1} > x^2_{i_2}
+% \end{equation}
+% 
+% \end{prop}
+% 
+% \noindent{\textbf{Proof}:}
+
+
+% Pareto Dominance in  $\RR^2$
+% 
+% \begin{definition}[Pareto Dominance in  $\RR^2$]
+% We define following binary relations in $\RR^2$ with:
+% \begin{equation}
+% \forall y=(y^1,y^2),z=(z^1,z^2) \in \RR^2, \hskip 1cm y \preccurlyeq z  \Longrightarrow  y^1\leqslant z^1 \phantom{2} \mbox{and} \phantom{2}  y^2\leqslant z^2
+% \end{equation}
+% \begin{equation}
+% \forall y=(y^1,y^2),z=(z^1,z^2) \in \RR^2, \hskip 1cm y \prec z  \Longrightarrow  y \preccurlyeq z \phantom{2} \mbox{and} \phantom{2}  y\neq z
+% \end{equation}
+% \end{definition}
+
+%$\preccurlyeq$ is an order, $\prec$ is a strict order.
+
+% $\RR$ total order, but $\preccurlyeq$ are not total $a=(1,0)$ and $b=(0,1)$ do not verify  $a \preccurlyeq b$ and  $b \preccurlyeq a$.
+% \vskip 0.3cm
+
+
+%We define following distance between points of $E$, 
+We consider in this paper the Euclidian distance, defining for all $ y=(y^1,y^2),z=(z^1,z^2) \in \RR^2$: 
+\begin{equation}
+%\forall y=(y^1,y^2),z=(z^1,z^2) \in \RR^2, \phantom{2}  
+d(y,z) = |\!| y -z |\!| = \sqrt{ \left(y^1 - z^1\right)^2 + \left(y^2 - z^2\right)^2}
+\end{equation}
+
+
+%We note $d_{i,j} = d(x_{i},x_{j}) = |\!| x_{i} -x_{j} |\!| = \sqrt{ \left(x^1_{i} - x^1_{j}\right)^2 + \left(x^2_{i} - x^2_{j}\right)^2}$
+
+%triangle inequality
+
+We define  $\Pi_K(E)$, as the set of all the possible partitions of $E$ in $K$ subsets:
+\begin{equation}
+\Pi_K(E) = \left\{P \subset \PP(E)\: \bigg| \:\forall p,p' \in P, \:\:p \cap p' =  \emptyset \: \mbox{and} \: \bigcup_{p \in P} = E \: \mbox{and} \; \mbox{card}(P)=K \: \right\} 
+\end{equation}
+
+
+
+K-means clustering  is a combinatorial optimization problems indexed by $\Pi_K(E)$.
+K-means clustering minimizes the sum for all the $K$ clusters of the average distances from the points of the clusters to the centroid.
+Mathematically, this can be written as:
+\begin{equation}\label{defKmeans}
+\min_{\pi \in \Pi_K(E)}  
+\sum_{p \in \pi}  \sum_{x \in p} \left|\!\left| x - \frac 1 {\mbox{card}(p)} \sum_{y \in p} y \right|\!\right|^2
+\end{equation}
+
+
+% \section{$k$-means clustering}
+% 
+% 
+% 
+% The standard iterative 
+% $k$-means 
+% algorithm (\cite{lloyd1982least}) is a widely used heuristic solution.
+% 
+% \cite{hartigan1979algorithm}
+% 
+% \cite{arthur2007k}: $k$-means ++
+% 
+% 
+% The problem is NP-hard in a general Euclidean space, even 
+% when the number of clusters k  is 2 (\cite{aloise2009np}), or 
+% when the dimensionality is 2 (\cite{mahajan2012planar}). 
+% 
+% \cite{dasgupta2008hardness}: NP hard
+% 
+% 
+% \cite{mahajan2012planar}: The planar $k$-means problem is NP-hard,
+% 
+% \cite{wang2011ckmeans}: 
+%  optimal $k$-means clustering in one dimension by dynamic programming,
+% 
+% 
+%  \cite{hartigan1979algorithm}
+% 
+% \cite{arthur2007k}: $k$-means ++
+%  
+% \cite{nielsen2014further}: large neighborhoods
+% 
+% 
+% \cite{awasthi2010stability}: PTAS
+
+\section{Preliminary results}
+
+
+% \begin{definition}
+%  We define following relation between points in  $\RR^2$,
+%  
+%  
+% \begin{equation}
+% \forall y=(y^1,y^2),z=(z^1,z^2) \in \RR^2, \phantom{2}  
+% y \prec z  \Longleftrightarrow  \left(y^1< z^1 \phantom{1} \mbox{and}\phantom{1} y^2> z^2\right)
+% 
+% d(y,z) = |\!| y -z |\!| = \sqrt{ \left(y^1 - z^1\right)^2 + \left(y^2 - z^2\right)^2}
+% \end{equation}
+% \end{definition}
+
+This section gives some preliminary results necessary for the following developments.
+
+
+\begin{prop}[Order Properties]\label{transitiv}
+ $\prec$ has following properties:
+ \begin{equation}\label{relTransitiv}
+\forall x,y,z  \in \RR^2, \phantom{3} x \prec y \phantom{1} \mbox{and}\phantom{1} y \prec z \Longrightarrow x \prec z
+\end{equation}
+\begin{equation}
+\forall x,y,z  \in \RR^2, \lambda \in [0,1] \phantom{3} x \prec z \phantom{1} \mbox{and}\phantom{1} y \prec z \Longrightarrow \lambda x + (1-\lambda) y \prec z
+\end{equation}
+\begin{equation}
+\forall x,y,z  \in \RR^2, \lambda \in [0,1] \phantom{3} x \prec y \phantom{1} \mbox{and}\phantom{1} x \prec z \Longrightarrow x \prec \lambda z + (1-\lambda) y
+\end{equation}
+\end{prop}
+
+\noindent{\textbf{Proof}:} The proofs of these results are easy, straightforward applications of the properties of the relation $<$ in $\RR$.
+\vskip 0.3cm
+
+% $\prec$ is a strict order.
+
+\begin{prop}[Total order]\label{reord}
+Points $(x_i)$ can be indexed such that:
+\begin{equation}\label{ordCroissant}
+\forall (i_1,i_2) \in [\![1;N]\!]^2, \phantom{3} i_1<i_2 \Longrightarrow x_{i_1} \prec x_{i_2}
+\end{equation}
+
+\end{prop}
+
+\noindent{\textbf{Proof}:}
+We prove the result by induction on $N \in \NN$.\\
+For $N=1$, the propriety (\ref{ordCroissant}) is trivially verified.\\
+Let us suppose $N>1$ and the Induction Hypothesis (IH) that (\ref{ordCroissant}) is true for $N-1$.\\
+Let $A = \{a \in \RR \: | \: \exists x_i \in E, \: a = x_i^1 \}$.\\
+$A$ is a finite subset of $\RR$, it has a maximum. Let $m$ such that  $x_m^1 = \max A$. \\
+Let $m'\neq m$. 
+$x_m \: \mathcal{I} \: x_{m'}$ with the definition of $E$, it implies $x_{m'}^1 \prec x_m^1$  or $x_{m}^1 \prec x_{m'}^1$ .\\ 
+$x_{m}^1 \prec x_{m'}^1$ implies $x_{m'}^1 > x_m^1$ which is in contradiction with  $x_m^1 = \max A$, thus $x_{m'}^1 \prec x_m^1$.\\
+It proves:
+\begin{equation}\label{recolREc}
+\forall i \in [\![1;N]\!]-\{m\}, \phantom{3} x_{i} \prec x_{m}
+\end{equation}
+Applying (IH) to $[\![1;N]\!]-\{m\}$ allows to index $[\![1;N]\!]-\{m\}$ as $i_1 < \dots < i_{N-1}$ with propriety (\ref{ordCroissant}).
+Defining $i_N = m$, the missing inequalities are furnished by  (\ref{recolREc}) to have the result true for $N$.\\
+It proves by induction that (\ref{ordCroissant}) is true for all $N \in \NN$. $\square$
+
+
+  \begin{figure}[ht]
+      \centering 
+   \begin{tikzpicture}[scale=0.5]
+    %\draw[very thin,color=gray] (-1,-1) grid (1,1);
+    \draw[->] (0,0) -- (20,0) node[right] {$\emph{Obj}_1$};
+    \draw[->] (0,0) -- (0,10.6) node[above] {$\emph{Obj}_2$};
+    \draw (1.2,9.7) node[above] {$x_1$};
+    \draw (1,9.7) node[color=blue!50] {$\bullet$};
+    \draw (1.4,8.1) node[above] {$x_2$};
+    \draw (1.7,8.1) node[color=blue!50] {$\bullet$};
+    \draw (2.7,6.8) node[above] {$x_3$};
+    \draw (2.5,6.8) node[color=blue!50] {$\bullet$};
+    \draw (3.7,6.4) node[above] {$x_4$};
+    \draw (3.5,6.4) node[color=blue!50] {$\bullet$};
+    \draw (4.7,6.1) node[above] {$x_5$};
+    \draw (4.5,6.1) node[color=blue!50] {$\bullet$};
+    \draw (5.2,5.3) node[above] {$x_6$};
+    \draw (5,5.3) node[color=blue!50] {$\bullet$}; 
+    \draw (6.5,5.1) node[above] {$x_7$};
+    \draw (6.3,5.1) node[color=blue!50] {$\bullet$};
+    \draw (8.2,4.7) node[above] {$x_8$};
+    \draw (8,4.7) node[color=blue!50] {$\bullet$};
+    \draw (9.2,3.4) node[above] {$x_9$};
+    \draw (9,3.4) node[color=blue!50] {$\bullet$};
+    \draw (10.2,3.1) node[above] {$x_{10}$};
+    \draw (10,3.1) node[color=blue!50] {$\bullet$};
+    \draw (11.2,2.7) node[above] {$x_{11}$};
+    \draw (11,2.7) node[color=blue!50] {$\bullet$};
+    \draw (12.9,2.4) node[above] {$x_{12}$};
+    \draw (12.7,2.4) node[color=blue!50] {$\bullet$};
+    \draw (14.7,2.1) node[above] {$x_{13}$};
+    \draw (14.3,2.1) node[color=blue!50] {$\bullet$};
+    \draw (16.6,1.4) node[above] {$x_{14}$};
+    \draw (16.4,1.4) node[color=blue!50] {$\bullet$};
+    \draw (18.9,0.9) node[above] {$x_{15}$};
+    \draw (18.7,0.9) node[color=blue!50] {$\bullet$};
+    \end{tikzpicture}
+    \caption{Illustration of  the indexation implied by Proposition \ref{reord} in a 2-d Pareto front }\label{orderIllustr}  
+   \end{figure}
+
+
+\begin{prop}%[Optimal clusters for p-center]
+We suppose that points $(x_i)$ are sorted following Proposition \ref{reord}.
+Let $(i_1,i_2,i_3) \in [\![1;n]\!]^3$.
+\begin{equation}
+ i_1<i_2<i_3 \Longrightarrow d(x_{i_1},x_{i_2}) < d(x_{i_1},x_{i_3})
+\end{equation}
+\end{prop}
+
+\noindent{\textbf{Proof}:} Let $ i_1<i_2<i_3$. Proposition \ref{reord} ordering ensures
+$x^1_{i_1} < x^1_{i_2} < x^1_{i_3}$ and $x^2_{i_1} > x^2_{i_2} > x^2_{i_3})$
+$d(x_{i_1},x_{i_2})^2 = {(x^1_{i_1} - x^1_{i_2})^2 + (x^2_{i_1} - x^2_{i_2})^2}$\\
+With $x^1_{i_3} - x^1_{i_1} > x^1_{i_2} - x^1_{i_1}>0$, $(x^1_{i_1} - x^1_{i_2})^2 < (x^1_{i_1} - x^1_{i_3})^2$\\
+With $x^2_{i_3} - x^2_{i_1} < x^2_{i_2} - x^2_{i_1}<0$, $(x^2_{i_1} - x^2_{i_2})^2 < (x^2_{i_1} - x^2_{i_3})^2$\\
+Thus $d(x_{i_1},x_{i_2})^2 < {(x^1_{i_1} - x^1_{i_3})^2 + (x^2_{i_1} - x^2_{i_3})^2} = d(x_{i_1},x_{i_3})^2$. $\square$
+
+
+
+
+
+
+
+
+% \begin{lemma}\label{centroid}
+% Let  $z_1,\dots,z_m  \in \RR^2$,
+% %Points $(c_i)$ can be indexed such that:
+% \begin{equation}
+% \forall p \in \RR^2, \phantom{3} 
+% \sum_{i=1}^m |\!| z_i-p |\!|^2 \geqslant \sum_{i=1}^m \left|\!\left| z_i- \frac 1 m \sum_{j=1}^m z_j \right|\!\right|^2
+% \end{equation}
+% \end{lemma}
+% 
+% \noindent{\textbf{Proof}:} function $z \mapsto \sum_{i=1}^m |\!| z_i-z |\!|^2$, positive and convex \dots
+
+% \begin{lemma}[Total order among centroids]\label{reordCentroids}
+% Let optimal clusters and their centroids $(c_i)_{i \in [\![1;k]\!]}$
+% Points $(c_i)$ can be indexed such that:
+% \begin{equation}
+% \forall (i_1,i_2) \in [\![1;n]\!]^2, \phantom{3} i_1<i_2 \Longrightarrow c^1_{i_1} < c^1_{i_2} \phantom{2} \mbox{ and } \phantom{2} c^2_{i_1} > c^2_{i_2}
+% \end{equation}
+% \end{lemma}
+
+%\noindent{\textbf{Proof}:} TODO
+% 
+% \begin{prop}\label{mediatrice}
+% Let $z_1,z_2,z_3  \in \RR^2$, such that $z_1 \prec z_2\prec z_3$.
+% 
+% We suppose having hyperplane $\HH$ such that $z_1$ and $z_2$ are separated by $H$, i.e. 
+% $z_1$ and $z_2$ are on the different semi spaces defined by $\HH$.
+% 
+% $z_3$ is necessarily on the same side of hyperplane $\HH$ than $z_2$.
+% 
+% \end{prop}
+% 
+% \noindent{\textbf{Proof}:} 
+% This result is proven analytically. Without loss of generality, we can suppose that
+% $z_1$ and $z_2$ have respective coordinate $z_1=(0,b)$ and $z_2=(a,0)$ translating the origin of the coordinates.
+% This translation does not have an impact on the propriety defining $\prec$.
+% $a,b>0$ are implied by $z_1 \prec z_2$.
+% 
+% $z_2 \prec z_3$ implies that the coordinates of $z_3$ are in the form $z_3=(a+\varepsilon_1,-\varepsilon_2)$ with $\varepsilon_1,\varepsilon_2>0$.
+% 
+% 
+% For the proof, we suppose that $\HH$ has the equation $Y = \alpha X + \beta$.
+% For the generality of the proof, we must verify that the propriety is true for hyperplanes defined by  $X=\beta$.
+% One can verify that the proof is similar (and easier) than the case treated below. % $Y = \alpha X + \beta$
+% 
+%  $z_1$ is in the semi space $Y > \alpha X + \beta$
+% and  $z_2$ is in the semi space $Y < \alpha X + \beta$. %(If this is not true, changing $(\alpha,\beta)$ to $(- \alpha ,-\beta)$ allows to treat this case).
+% 
+% The coordinates of  $z_1$ and $z_2$ verify thus:
+% \begin{equation}
+% b > \alpha \times 0 + \beta = \beta 
+% \end{equation}
+% \begin{equation}
+% 0 < \alpha \times a + \beta  
+% \end{equation}
+% Then, 
+% $Y_{z3} - \alpha X_{z3} - \beta = -\varepsilon_2 - \alpha .(a+\varepsilon_1) - \beta
+% = -\varepsilon_2 - \alpha .\varepsilon_1 - \alpha .a - \beta<0$%> \varepsilon_2 + \alpha .\varepsilon_1$
+% 
+% $z_3$ is thus on the same side of hyperplane $\HH$ than $z_2$.
+% 
+% 
+% 
+% \begin{prop}\label{mediatrice2}
+% Let $z_1,z_2,z_3  \in \RR^2$, such that $z_1 \prec z_2\prec z_3$.
+% 
+% We suppose having hyperplane $\HH$ such that $z_2$ and $z_3$ are separated by $H$, i.e. 
+% $z_2$ and $z_3$ are on the different semi spaces defined by $\HH$.
+% 
+% $z_1$ is necessarily on the same side of hyperplane $\HH$ than $z_2$.
+% 
+% \end{prop}
+% 
+% \noindent{\textbf{Proof}:} The proof is similar to Proposition \ref{mediatrice}.
+% This result is proven analytically. Without loss of generality, we can suppose that
+% $z_2$ and $z_3$ have respective coordinate $z_2=(0,b)$ and $z_3=(a,0)$ translating the origin of the coordinates.
+% This translation does not have an impact on the propriety defining $\prec$.
+% $a,b>0$ are implied by $z_2 \prec z_3$.
+% 
+% $z_1 \prec z_2$ implies that the coordinates of $z_1$ are in the form $z_1=(-\varepsilon_1,b+\varepsilon_2)$ with $\varepsilon_1,\varepsilon_2>0$.
+% 
+% 
+% For the proof, we suppose that $\HH$ has the equation $Y = \alpha X + \beta$.
+% For the generality of the proof, we must verify that the propriety is true for hyperplanes defined by  $X=\beta$.
+% One can verify that the proof is similar (and easier) than the case treated below. % $Y = \alpha X + \beta$
+% 
+% Without loss of generality, we suppose that $z_2$ is in the semi space $Y > \alpha X + \beta$
+% and  $z_3$ is in the semi space $Y < \alpha X + \beta$. (If this is not true, changing $(\alpha,\beta)$ to $(- \alpha ,-\beta)$ allows to treat this case).
+% 
+% The coordinates of  $z_2$ and $z_3$ verify thus:
+% \begin{equation}
+% b > \alpha \times 0 + \beta = \beta 
+% \end{equation}
+% \begin{equation}
+% 0 < \alpha \times a + \beta  
+% \end{equation}
+% Then, 
+% $Y_{z1} - \alpha X_{z1} - \beta = b+\varepsilon_2 + \alpha .\varepsilon_1 - \beta$%> \varepsilon_2 + \alpha .\varepsilon_1$
+% 
+% % We suppose $d(x_1,c_2) \geqslant d(x_1,c_1)$. Let us prove that it implies  $d(x_2,c_1) < d(x_2,c_2)$.
+% % 
+% $d(x_1,c_2) < d(x_2,c_2)$. (Lemma TODO)
+% 
+% $d(x_1,c_1) > d(x_2,c_1)$. (Lemma TODO)
+% 
+% TODO: a verifier les indices
+
+
+% \begin{prop}[non empty optimal clusters]\label{propOptimality0}
+% The optimal clusters of the minimization problem \ref{defKmeans} are
+% $K$ non empty subsets of $E$.
+% \end{prop}
+% 
+% \noindent{\textbf{Proof}:}
+
+\section{Optimal clusters for $k$-means clustering in a 2d-Pareto Front}
+
+This section gives the fundamental results for the algorithm of section 5.
+The optimal clusters can be characterized and enumerated polynomially, as proven in this section.
+
+\subsection{Conjecture for the optimality of clusters}
+
+
+This result is intuitive geometrically.
+However, it is not fully proven, so we mention it as a conjecture. 
+
+
+
+\begin{conj}[Optimal clusters]\label{propOptimality}
+We suppose that points $(x_i)$ are sorted following Proposition \ref{reord}.
+We conjecture we have optimal solutions of the minimization problem \ref{defKmeans} having only clusters  $\CC_{i,i'} = 
+\{x_j\}_{j \in \![i,i']\!]}= \{x \in E \: | \: \exists j \in \![i,i']\!],\: x = x_j \} $
+\end{conj}
+
+
+This characterization of the  clusters is crucial
+for an application of the Dynamic programming algorithm with a Bellman's optimality property.
+
+% \noindent{\textbf{Proof}:} 
+% We prove the result by induction on $K \in \NN$.\\
+% For $K=1$, the optimal cluster is $E = \{x_j\}_{j \in \![1,N]\!]}$.\\
+% Let us suppose $K>1$ and the Induction Hypothesis (IH) that Proposition \ref{propOptimality}  is true for $K-1$-means clustering.
+% We suppose having an optimal solution of the  $K$-means clustering on $E$.\\
+% We denote with $\CC$ the cluster of $x_N$.
+% Let $A = \{ i \in [\![1,N]\!] \:| \: \forall k \in  [\![i,N]\!], x_k \in \CC \}$.\\
+% $A$ is a subset of $\NN$, non empty as $N\in A$, is has a minimum.\\
+% Let $j = \min \{ i \in [\![1,N]\!] \:| \: \forall k \in  [\![i,N]\!], x_k \in \CC \}$.\\
+% If $j=1$,  $E=\CC= \{x_j\}_{j \in \![1,N]\!]}$ and the result is proven.
+% We suppose now $j>1$. \\ 
+% $j-1 \notin A$, $j-1 \in A$ would have been a contradiction to $j = \min A$.\\
+% For all $k \in  [\![i,j]\!]$, $x_k \in \CC$, thus the only possibility to have $j-1 \notin A$ is that $x_{j-1} \notin \CC$.\\
+% Let $\CC '$ the cluster of $x_{j-1}$ We denote with $c$ and $c'$ the respective centroids of clusters $\CC$ and $\CC '$.\\
+% The mediatrice of points $c$ and $c'$ is a separation hyperplan between clusters $\CC$ and $\CC '$.
+% This propriety is general for $k$-means clustering, and true for local minimums of the Lloyd's Algorithm (we refer to \cite{nielsen2016introduction}).\\
+% Proposition \ref{mediatrice} applies thus to prove that none of the points $x_{l}$ for $l<j$ can be in the cluster $\CC$.\\
+% A first consequence is that the cluster $\CC$ is exactly  $\{x_l\}_{l \in [\![j,N]\!]}$, cluster $\CC$ fulfill the result of Proposition \ref{propOptimality}.\\
+% A second consequence is that the other clusters are optimal clustering $E' = E - \CC$ with $k-1$-means.
+% Applying (IH) the $k-1$ clustering  to points $\{x_l\}_{l \in [\![1,j-1]\!]}$ prove that these clusters
+% are on the form $\CC_{i,i'} = \{x_j\}_{j \in \![i,i']\!]}$.
+% It proves by induction that Proposition \ref{propOptimality}  is true for all $K \in \NN$. $\square$
+% 
+
+
+%$k$-means: partant des centroides.
+% Par absurde:
+% We suppose the existence of $\CC_1,\CC_2$ two "nested" clusters.
+% Let $c_1,c_2$ the centroids of $\CC_1,\CC_2$.
+% We suppose $c_1 \prec c_2$ (quitte a reordonner).
+% $z_1$ the minimum of $\CC_1$, $z_1 \prec c_1$
+% $z_2$ the maximum of $\CC_2$, $c_2 \prec z_2$
+% 
+% We have $z_1 \prec c_1 \prec c_2\prec z_2$.
+% The absurdum hypothesis, if there exist an interversion, we should have the existence of two elements
+% $x_2 \in \CC_2$ and $x_1 \in \CC_1$ and $x_2 \prec x_1$.
+% %with the existence
+% 
+% With Lemma \ref{mediatrice}, we have either $d(x_1,c_2) < d(x_1,c_1)$ or  $d(x_2,c_1) < d(x_2,c_2)$.
+% We suppose $d(x_1,c_2) < d(x_1,c_1)$, the other case is analogous. 
+% 
+% We define clusters $\CC_1' = \CC_1 - \{x_1\}$ and $\CC_2' = \CC_2 \cup \{x_1\}$.
+% We denote with $c'_1,c'_2 $ their cluster.
+% 
+% The cost of the new partition  $\CC_1',\CC_2'$ is:
+% 
+% $$v= \sum_{x \in \CC_1'}  |\!| x -c'_1|\!|^2 + \sum_{x \in \CC_2'}  |\!| x -c'_2|\!|^2 $$
+% 
+% Using Lemma \ref{centroid},
+% 
+% $$v \leqslant \sum_{x \in \CC_1'}  |\!| x -c_1|\!|^2 + \sum_{x \in \CC_2'}  |\!| x -c_2|\!|^2 
+% = \sum_{x \in \CC_1}  |\!| x -c_1|\!|^2 - |\!| x_1 -c_1|\!|^2  + \sum_{x \in \CC_2}  |\!| x -c_2|\!|^2 + |\!| x_1 -c_2|\!|^2 $$
+% 
+% 
+% With the hypothesis $d(x_1,c_2) < d(x_1,c_1)$, $|\!| x_1 -c_2|\!|^2 - |\!| x_1 -c_1|\!|^2 <0$, it implies:
+% 
+% $$v <\sum_{x \in \CC_1}  |\!| x -c_1|\!|^2 + \sum_{x \in \CC_2}  |\!| x -c_2|\!|^2$$
+% 
+% Which is contradictory with the optimality of the $k$-means clustering $\CC_1,\CC_2$.
+
+\subsection{Computing cost for one single cluster}\label{sec::singleCluster}
+
+This section investigates the complexity to compute the cost of the possible optimal clusters.
+We note $c_{i,i'}$ the cost of the cluster $\CC_{i,i'}$:
+
+
+$$c_{i,i'} = \frac 1 {i' -i} \sum_{j=i}^{i'} \left|\!\left| x_j - \frac 1 {i' -i} \sum_{k=i}^{i'} x_k \right|\!\right|^2$$
+
+Computing $c_{i,i'}$ requires using this formula $O(i'-i)$ operations, for the computation of the centroid $\frac 1 {i' -i} \sum_{k=i}^{i'} x_k$
+and for the summation over the $i'-i$ elements to compute their distance to the centroid.
+The other operations are in $O(1)$.
+
+The next section requires to compute  all the $c_{i,i'}$ with $i<i'$. % denoting the cost to have the cluster $[\![i,i']\!]$
+Processing all the computations of $c_{i,i'}$ This makes a summed complexity in:
+
+$$\sum_{i<i'} O(i'-i) = O(N^3)$$
+%\subsection{$k$-means}
+
+
+
+
+
+%complexity $O(n^3)$
+
+% \begin{equation}\label{defBarycentre}
+% b_{i,i'} = \frac 1 {i' -i} \sum_{k=i}^{i'} x_k 
+% \end{equation}
+
+
+\begin{figure}[ht]
+ \centering 
+\begin{tabular}{ l }
+\hline
+\textbf{Algorithm 1: $k$-means clustering in a 2d-Pareto Front}\\
+\hline
+\verb!  !\\
+
+\textbf{Input:} \\
+%- \verb!Pblm! a problem amon,g $k$-means, p-center, p-median,\\
+- $N$ points  of $\RR^2$, $E =\{x_1,\dots, x_N\}$  %fulfilling hypothesis (\ref{hypoNonDominated})
+such that for all $ i\neq j$, $x_i \phantom{0} \mathcal{I} \phantom{0} x_j$ ;\\
+- $K\in\NN$ the number of clusters\\
+
+\verb!  !\\
+
+\textsc{Cluster2dPareto}(E,K)\\
+\verb!  ! //Initialization phase. \\ %of matrices $c$ and $C$.\\
+%\textbf{Initialization:}\\ % \verb!currentSolution = null!, %$\mathcal{N}=$initial neighbourhood.\\
+\verb!  ! define matrix $c$ with $c_{i,j}=0$  for all $(i,j)\in [\![1;N]\!]^2$\\
+\verb!  ! initialize  matrix $C$ with  $C_{i,k}=0$  for all $i\in [\![0;N]\!], k\in [\![1;K]\!]$\\
+\verb!  ! initialize $\PP=$\verb!nil!, a set of sub-intervals of $[\![1;N]\!]$.\\
+%\textbf{Initialization:}\\
+\verb!  ! sort $E$ following the order of Proposition \ref{reord}\\
+\verb!  ! compute $c_{i,j}$ for all $(i,j)\in [\![1;N]\!]^2$ as in section \ref{sec::singleCluster}\\
+\verb!  ! //Construction of the matrix $C$ \\
+\verb!  ! \textbf{for} $i=1$ to $N$\\
+
+\verb!    ! // case $k=1$ treated separately\\
+\verb!    ! set $C_{i,k} = c_{1,i}$\\
+\verb!    ! \textbf{for} $k=2$ to $K$ \\
+\verb!      ! set $C_{i,k} = \min_{j \in [\![1,i]\!]} C_{j-1,k-1} + c_{j,i}$\\
+\verb!    ! \textbf{end for} \\
+\verb!  ! \textbf{end for} \\
+\textbf{return} $C_{N,K}$ the optimal cost \\
+
+\verb!  ! //Backtrack phase\\
+\verb!  ! $i=N$\\
+\verb!  ! \textbf{for} $k=K$ to $1$ with increment $k \leftarrow k-1$\\
+\verb!    ! find $j\in [\![1,i]\!]$ such that $C_{i,k} = C_{j-1,k-1} + c_{j,i}$\\
+\verb!    ! add $[\![j,i]\!]$ in $\PP$\\
+\verb!    ! %\textbf{if} $j>1$ \textbf{then}
+$i=j-1$\\
+\verb!  ! \textbf{end for} \\
+
+\textbf{return} the partition $\PP$ giving the cost $C_{N,K}$\\
+\hline
+\end{tabular}
+\end{figure}
+
+
+\section{Dynamic Programming algorithm}
+
+%Algo valid and common for the 4 clustering algorithms once  having computed $c_{i,i'}$ with $i<i'$, 
+
+
+Conjecture \ref{propOptimality} and the polynomial computations of all the $c_{i,i'}$ with $i<i'$
+allows to derive a dynamic programming algorithm.
+Defining $C_{i,k}$ as the optimal cost of the $k$-means clustering with $k$ cluster among points $[\![1,i]\!]$ for all $i \in [\![1,N]\!]$ and $k \in [\![1,K]\!]$,
+we have following induction relation:
+
+\begin{equation}\label{inducForm}
+\forall i \in [\![1,N]\!], \: \forall k \in [\![2,K]\!], \:\:\: C_{i,k} = \min_{j \in [\![1,i]\!]} C_{j-1,k-1} + c_{j,i}
+\end{equation}
+This last relation use the convention that $C_{0,k} = 0$ for all $k\geqslant0$.
+The case $k=1$ is directly given by:
+\begin{equation}
+\forall i \in [\![1,N]\!], \:\:\: C_{i,1} =  c_{1,i}
+\end{equation}
+These relations allow to compute the optimal values of $C_{i,k}$ by dynamic programming in the Algorithm 1.
+$C_{N,K}$ is the optimal solution of the $k$-means problem, a backtracking algorithm on the
+matrix $(C_{i,k})_{i,k}$ allows to compute the optimal partitioning clusters:
+
+
+
+
+
+
+\begin{theorem}%[$k$-means is polynomial for a $2$-dimension Pareto front]
+Let  $E =\{x_1,\dots, x_N\}$ a subset of $N$ points  of $\RR^2$, %fulfilling hypothesis (\ref{hypoNonDominated})
+such that for all $ i\neq j$, $x_i \phantom{0} \mathcal{I} \phantom{0} x_j$.
+The complexity of Algorithm 1 is in $O(N^3)$.
+If the conjecture \ref{propOptimality} is proven, the $k$-means optimal  clustering is polynomially solvable with Algorithm 1.
+\end{theorem}
+
+\noindent{\textbf{Proof}:}
+In Algorithm 1, it is easy to show by induction that 
+$C_{i,k}$ has its final value for all $i \in [\![1,N]\!]$ at the end of the for loops from $k=2$ to $K$.
+The reason is that the induction formula (\ref{inducForm}) uses only values $C_{i,j}$ with $j<k$.
+$C_{N,K}$ is thus at the end of these loops the optimal value
+of the $K$-means clustering among the $N$ points of $E$.
+The backtracking phase searches for the equalities in $C_{i,k} = C_{j'-1,k-1} + c_{j',i} =\min_{j \in [\![1,i]\!]} C_{j-1,k-1} + c_{j,i}$,
+proving that such cluster $\CC_{j',i}$ allows to give an optimal solution.
+
+Let us analyze the complexity.
+Sorting and indexing the elements of $E$ following Proposition \ref{reord}
+is equivalent to sort following one dimension, as highlighted in the proof of Proposition \ref{reord}.
+The complexity of this sorting phase is thus in $O(N\log N)$.
+The straightforward computation of the matrix $c_{i,i'}$  has a complexity in $O(N^3)$
+following the computation of section 4.
+The construction of the matrix $C_{i,k}$ in the dynamic Programming phase requires $N\times K$
+computations of $\min_{j \in [\![1,i]\!]} C_{j-1,k-1} + c_{j,i}$, which are in $O(N)$,
+the complexity of this phase is in  $O(K.N^2)$ which is a $O(N^3)$ as $K < N$.
+The final backtracking phase requires $K$ computations having a complexity in $O(N)$, the complexity is in $O(K.N)$.
+It proves that the complexity of Algorithm 1 is in $O(N^3)$, the phase giving this complexity being the computation
+of matrix $c_{i,i'}$.
+
+
+\section{Discussions}
+
+This section discusses the implications and applications of Theorem 1 and Algorithm 1.
+
+\subsection{Relations with the state-of-the-art}
+
+The $k$-means problem was proven 
+NP-hard in a Euclidean space of dimension 2 since \cite{mahajan2012planar}. 
+This emphasizes that the hypothesis of non dominated solutions is crucial in this result.
+We note similarities with the 1-dimensional case, proven polynomially solvable thanks to
+ a  dynamic programming algorithm in \cite{wang2011ckmeans} improved in \cite{gronlund2017fast}.
+Actually, Proposition \ref{reord} induces a similarity with the  1-dimensional case,
+the total order induces a 1-dimensional structure.
+The general 1-dimensional  $k$-means problem is included in the  2 dimensional case in a Pareto Front,
+it is equivalent to cluster among a linear  Pareto front.
+The general case without linearity of the Pareto front induces more complications, with no additivity of distance but a triangular inequality.
+Lastly, we note that an equivalent of the Conjecture 1 was proven
+for the p-median and p-centers problems in  \cite{dupin2018clustering}, leading to polynomially proven algorithms.
+
+
+\subsection{Improving the complexity of Algorithm 1?}
+In the Algorithm 1, the complexity is due to the initial computations of the matrix $c_{i,i'}$,
+whereas main part of the algorithm, the dynamic programming phase, has a complexity in $O(K.N^2)$. % complexity
+It is possible to reduce the number of computations noticing
+that some computations of $c_{i,i'}$ are not required.
+Indeed, in the computations $C_{i,k} = \min_{j \in [\![1,i]\!]} C_{j-1,k-1} + c_{j,i}$,
+the computation of $c_{i,j}$ may be useless if $C_{j-1,k-1} + \tilde{c}_{i,j}$ is higher than the current best value in the minimization,
+where $\tilde{c}_{i,j}$ is a lower bound of $c_{i,j}$ easier to compute.
+This opens numerical perspectives to accelerate the Algorithm 1.
+
+
+
+\subsection{Adding cardinality constraints}
+
+Similarly to \cite{nielsen2014optimal}, Algorithm 3 allows to incorporate cardinality constraints, considering only clusters $\CC_{i,i'}$ with specific cardinality of $i'-i$.
+A first reason is that when $i'-i$ close to $N$, there are few chance to have very unbalanced clusters at optimality.
+A second reason could be to impose for representativity to avoid too small clusters.
+It can be a constraint to impose that the cardinal of the selected clusters must be close to $\frac N K$.
+In Algorithm 3, a first way to deal with such constraints is to set values  $c_{i,i'} = + \infty$ for the  $i<i'$ with the unwilled cardinality.
+
+We note that such cardinality constraints can have a positive impact on the complexity of Algorithm 1.
+Computations $C_{i,k} = \min_{j \in [\![1,i]\!]} C_{j-1,k-1} + c_{j,i}$ are easier with less cases in $j$ to enumerate.
+For the both continuous and discrete p-center problems, the computations of $c_{i,i'}$ are independent, the useless computations of $c_{i,i'}$ can be removed.
+Allowing for each $i \in [\![1,N]\!]$ only $\alpha .K$ definite values of $c_{i,i'}$, it improves the final complexity.
+ A natural case would be to consider only the subsets $ [\![i,i']\!]$ 
+ with $\left \lfloor N / K \right\rfloor- \alpha K <|i'-i|< \left \lfloor N / K \right \rfloor+ \alpha k$ for a given $\alpha\in\NN$.
+With such choices, the construction of the matrix $C_{i,k}$ is in $O(K^2.N)$
+with operations  $C_{i,k} = \min_{j \in [\![1,i]\!]} C_{j-1,k-1} + c_{j,i}$ having a complexity in $O(K)$.
+With such choices, the construction of the matrix $C_{i,k}$ is in $O(K^2.N)$.
+
+\subsection{Accelerated matheuristic derived from Algorithm 1}
+%at least $O(k.n^2)$ complexity.
+The complexity in $O(N^3)$ can be a bottleneck to compute Algorithm 1 for high values of $N$.
+$O(K.N^2)$, the complexity of the dynamic programming algorithm without the computations of $c_{i,i'}$, can be a more reasonable complexity.
+
+A first possibility is to compute in $O(K)$ good lower bounds of $c_{i,i'}$ and use the dynamic programming
+with these estimations to compute partitions that are finally evaluated using the exact formula.
+As is, the dynamic programming has a complexity in $O(K.N^2)$.
+
+Another possibility, similar to variable fixing heuristics as in \cite{dupin2018parallel},
+is to restrict the computations forbidding some partitions.
+Setting $c_{i,i'}= + \infty$ forbids the cluster $\CC_{i,i'}$.
+% Similarly to \cite{nielsen2014optimal}, a possibility to reduce the complexity is to define for each
+%  point $x_i$ only $O(K)$ possibilities of cluster with $c_{i,i'}\neq + \infty$.
+%  A natural illustration would be to consider only the subsets $ [\![i,i']\!]$ 
+%  with $\lfloor N / K \rfloor- \alpha K <|i'-i|< \left \lfloor N / K \right \rfloor+ \alpha k$ for a given $\alpha\in\NN$.
+With such choices, the construction of the matrix $C_{i,k}$ is in $O(K^2.N)$.
+Using infinite values of $c_{i,i'}$ is also a way to add a cardinality constraints for the clusters.
+
+These two constructive matheuristics can be followed by local search iterations
+using the Lloyd's algorithm \cite{lloyd1982least}.
+This steepest descent procedure can be considered only on the extreme points of the clusters
+ with Proposition  \ref{propOptimality},
+ leading to a complexity in  $O(K)$ computations for each steepest descent iteration. 
+
+
+\subsection{Towards a distributed implementation}
+ The numerical computations of Algorithm 1 can be accelerated with
+a distributed implementation using the 
+Message Passing Interface (MPI) framework, as in \cite{nielsen2016introduction}.
+The computation of  $c_{i,i'}$ are independent and are thus easily easy parallelized. % implementation.
+The construction of the matrix $C_{i,k}$ requires independent computations for a given $k$, using
+the final values in $k-1$.
+For a parallel implementation sharing the memory, this requires just to wait that all the 
+coefficient $C_{i,k-1}$ are terminated to start the computations of $C_{i,k-1}$.
+With a distributed implementation with MPI, this requires for each thread to broadcast  the 
+results of $C_{i,k}$ computations to the other threads.
+
+\subsection{Using the Algorithm 1 in higher dimensions?}
+The applicative motivation could concern multi-optimization preoccupations with three or more objectives.
+The bi-objective case is a first step.
+The $2$-dimensional case is very specific thanks to  the Proposition \ref{reord}.
+However, Algorithm 1 can be used thanks to the
+reduction of dimension with Principal component analysis (PCA)
+or using the Johnson-Lindenstrauss lemma \cite{dasgupta2003elementary}.
+
+\subsection{Applications to multi-objective optimization}
+The hypothesis defining $E$ is verified for non-dominated points of bi-objective optimization.
+As stated in the introduction, the initial motivation of this work is to aid the decision makers
+when a  multi-objective optimization approach without preference furnishes a large set of non dominated solutions.
+In this application, the value of $K$ is small, for  human analyses to give some preferences.
+
+A posteriori, the complexity of Algorithm 3 allows also to consider these clustering algorithms inside multi-objective optimization meta-heuristics.
+Archiving Pareto fronts is a common issue of population meta-heuristics facing multi-objective optimization problems \cite{talbi2009metaheuristics}.
+A key issue is to have diversified points of the Pareto front in the archive, to compute diversified solutions along the current Pareto front.
+Algorithm 3 can be used to address this issue, embedded in multi-objective optimization approaches.
+More specifically, clustering Pareto sets has an application for the diversification of genetic algorithms to select diversified solutions for cross-over and mutation phases \cite{zio2011clustering}.
+For swarm particle optimization, clustering algorithm are also useful in the low-level implementation as shown in \cite{pulido2004using}.
+This applies also for the large class of  multi-objective meta-heuristics \cite{talbi2012multi}.
+
+Embedded in multi-objective meta-heuristics, Using Algorithm 3 would be called iteratively.
+Having a dynamic programming algorithm, this makes easier online optimization where several points are not changing from an iteration to another.
+In this case, the computation of matrix $c$ can reuse the previous values that are still valid.
+Coefficients $C_{i,k}$ can also be computed quicker with previous computations.
+
+
+\subsection{Applications to optimization under uncertainty}
+
+Clustering non-dominated vectors has also applications in the context of optimization under uncertainty.
+It is a natural and common idea to model the uncertain data by the use of discrete scenarios for stochastic and robust optimization 
+\cite{rockafellar1991scenarios,kasperski2016robust}.
+A computational limitation can be the maximal number of scenario to incorporate in the optimization models,
+or the number of scenario to explore in meta-heuristics like in \cite{haugen2001progressive}.
+It induces a need for an algorithm to select a subset of representative scenarios to explore,
+and/or to aggregate the closest scenarios.
+In both cases, the problem is similar to select a given number of scenarios, maximizing the representativity of the selected scenarios
+The points to cluster represent in this case scenarios, the dimension of the space $\RR^n$ is the number of uncertain parameters $n$.
+
+In the case of robust optimization with discrete scenarios, worst-case analysis induce to consider only the Pareto non-dominated scenarios. 
+The mid-point heuristic, aggregating non-dominated scenarios, is used for approximation results but also
+for the quality of primal heuristics in \cite{chassein2017scenario}.
+Partial aggregation following representative clusters of scenario is likely to improve the mid-point primal heuristic.
+
+
+In the case of stochastic optimization, the progressive hedge algorithm uses scenario aggregation
+to derive primal heuristics \cite{rockafellar1991scenarios,haugen2001progressive}.
+We note that dual heuristics in  \cite{dupin2018dual} aggregates also scenarios following partitions
+to have dual bounds for stochastic problems.
+The quality of the clustering impacts the quality of the heuristics in both cases,
+this makes sense to be careful on the clustering algorithms to use.
+
+
+% %in the progressivee hedge algorithm \cite{rockafellar1991scenarios}
+% 
+% selection scenarios: first eliminate dominated scenarios, in a Pareto front, computation limited i the number of scenarios that can be handled.
+% 
+% Scenarios and policy aggregation in optimization under uncertainty
+% stochastic,
+% 
+% 
+% 
+% 
+% 
+% %Progressive hedging as a meta-heuristic \cite{haugen2001progressive}
+% 
+% 
+% also clustering dual heuristics
+
+
+
+
+\bibliographystyle{plain} 
+%\bibliographystyle{splncs} 
+\bibliography{biblioCluster.bib}
+
+\end{document}
