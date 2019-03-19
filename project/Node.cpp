@@ -112,10 +112,53 @@ double getCiiPCenterAlgorithm(Node node[N], int i, int iNew){
 	}
 }
 
+double getKmeanFunc(Node node[], int i, int iNew){
+	int temp, l, j;
+	double meanX, meanY, range, sumLength = 0;
+	Node nodeMean;
+	if (iNew < i){
+		temp = iNew;
+		iNew = i;
+		i = temp;
+	}
+	else if (i == iNew){
+		return 0;
+	}
+	range = (double)(iNew - i + 1);
+
+	for (l = i; l <= iNew; l++) {
+		meanX = 0;
+		meanY = 0;
+		for (j = i; j <= iNew; j++) {
+			meanX += node[j].getX();
+			meanY += node[j].getY();
+		}
+		nodeMean.Set(meanX / range, meanY / range);
+		sumLength += nodeMean.getRange(node[l])*nodeMean.getRange(node[l]);
+	}
+	return sumLength / range;
+}
+
+void getKmean(Node node[N], double c[N][N]){
+	int i, j;
+	for (i = 0; i < N; i++){
+		for (j = 0; j < N; j++){
+			if (i >= j) {
+				c[i][j] = 0;
+			}
+			else {
+				c[i][j] = getKmeanFunc(node, i, j);
+			}
+		}
+	}
+}
+
+
+
 int cluster2DParetoFront(int* Pr, Node node[], const int K, int pblm, const int length){
 	//    Algorithm 3: 依照不同问题(pblm)的c阵计算C阵，遍历查找C阵对应的坐标
 	//    写入Pr矩阵中，返回该矩阵的有效长度。
-	//    pblm = 0 P-median,  pblm = 1 P-center pblm = 2 K-media
+	//    pblm = 0 P-median,  pblm = 1 P-center pblm = 2 K-media   pblm = 3 K-mean
 	double c[N][N];
 	double C[N][N];
 	int PLen = 0;
@@ -128,8 +171,11 @@ int cluster2DParetoFront(int* Pr, Node node[], const int K, int pblm, const int 
 	else if (pblm == 1){
 		getCiiPCenterProblem(c, node);
 	}
-	else {
+	else if(pblm == 2){
 		 getKmedia(node, c);
+	}
+	else{
+		getKmean(node, c);
 	}
 	for (i = 0; i < length; i++) {
 		k = 0;
@@ -146,7 +192,7 @@ int cluster2DParetoFront(int* Pr, Node node[], const int K, int pblm, const int 
 	int iNew = i;
 	for (k = K - 1; k >= 0; k--){
 		for (j = 1; j <= i; j++){
-			if (C[i][k] == (C[j - 1][k - 1] + getKmediaFunc(node, j, i))){
+			if (C[i][k] == (C[j - 1][k - 1] + getKmeanFunc(node, j, i))){
 				Pr[PLen] = j;
 				Pr[PLen + 1] = i;
 				PLen = PLen + 2;

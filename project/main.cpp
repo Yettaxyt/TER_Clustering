@@ -27,10 +27,12 @@ int main(int argc, const char * argv[]) {
 		cout << "File is Missing" << endl;
 		exit(1);
 	}
-	//    fileIn.getline(readBuffer, 100);    // 略过第一行
-	fileIn >> readBuffer;
+
+
 	fileIn >> readBuffer;
 	int length = atof(readBuffer);
+	fileIn >> readBuffer;
+
 	for (i = 0; i < length; i++){
 		fileIn >> readBuffer;             //读取x坐标
 		tempX = atof(readBuffer);       //转换为数字类型
@@ -54,7 +56,7 @@ int main(int argc, const char * argv[]) {
 	}
 
 
-	pLen = cluster2DParetoFront(p, node, k, 2, length);         //调用分类函数进行分类，数字代表方法几
+	pLen = cluster2DParetoFront(p, node, k, 3, length);         //调用分类函数进行分类，数字代表方法几
 
 
 	for (i = 0; i < pLen; i++){

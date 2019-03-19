@@ -107,9 +107,54 @@ double getCiiPCenterAlgorithm(Node node[N], int i, int iNew){
 	}
 }
 
+
+double getKmeanFunc(Node node[], int i, int iNew){
+	int temp, l, j;
+	double meanX, meanY, range, sumLength = 0;
+	Node nodeMean;
+	if (iNew < i){
+		temp = iNew;
+		iNew = i;
+		i = temp;
+	}
+	else if (i == iNew){
+		return 0;
+	}
+	range = (double)(iNew - i + 1);
+
+	for (l = i; l <= iNew; l++) {
+		meanX = 0;
+		meanY = 0;
+		for (j = i; j <= iNew; j++) {
+			meanX += node[j].getX();
+			meanY += node[j].getY();
+		}
+		nodeMean.Set(meanX / range, meanY / range);
+		sumLength += nodeMean.getRange(node[l])*nodeMean.getRange(node[l]);
+	}
+	return sumLength / range;
+}
+
+void getKmean(Node node[N], double c[N][N]){
+	int i, j;
+	for (i = 0; i < N; i++){
+		for (j = 0; j < N; j++){
+			if (i >= j) {
+				c[i][j] = 0;
+			}
+			else {
+				c[i][j] = getKmeanFunc(node, i, j);
+			}
+		}
+	}
+}
+
+
+
+
 int cluster2DParetoFront(int* Pr, Node node[], const int K, int pblm, const int length){
 	//    Algorithm 3: dynamic programme Calculate C
-	//    pblm = 0 P-median,  pblm = 1 P-center pblm = 2 K-media
+	//    pblm = 0 P-median,  pblm = 1 P-center pblm = 2 K-media  pblm = 3 K-mean 
 	double c[N][N];
 	double C[N][N];
 	int PLen = 0;
@@ -122,37 +167,67 @@ int cluster2DParetoFront(int* Pr, Node node[], const int K, int pblm, const int 
 	else if (pblm == 1){
 		getCiiPCenterProblem(c, node);
 	}
-	else {
-		      // getKmedia(node, c);
-	}
-
-	for (i = 0; i < length; i++) {
-		k = 0;
-		C[i][k] = getKmediaFunc(node, k, i);// c[k][i];
-		for (k = 1; k < K; k++) {
-			minC = 0;
-			for (j = 1; j < i; j++) {
-				if (minC >= C[j - 1][k - 1]){            // optimization!!! compare minC and C[j - 1][k - 1]
-					minC = noZeroMin(minC, C[j - 1][k - 1] + getKmediaFunc(node, j, i));
+	else if (pblm == 2){
+		for (i = 0; i < length; i++) {
+			k = 0;
+			C[i][k] = getKmediaFunc(node, k, i);// c[k][i];
+			for (k = 1; k < K; k++) {
+				minC = 0;
+				for (j = 1; j < i; j++) {
+					if (minC >= C[j - 1][k - 1]){            // optimization!!! compare minC and C[j - 1][k - 1]
+						minC = noZeroMin(minC, C[j - 1][k - 1] + getKmediaFunc(node, j, i));
+					}
+				}
+				C[i][k] = minC;
+			}
+		}
+		i = length - 1;
+		int iNew = i;
+		for (k = K - 1; k >= 0; k--){
+			for (j = 1; j <= i; j++){
+				if (C[i][k] == (C[j - 1][k - 1] + getKmediaFunc(node, j, i))){
+					Pr[PLen] = j;
+					Pr[PLen + 1] = i;
+					PLen = PLen + 2;
+					iNew = j - 1;
+					continue;
 				}
 			}
-			C[i][k] = minC;
+			i = iNew;
 		}
 	}
-	i = length - 1;
-	int iNew = i;
-	for (k = K - 1; k >= 0; k--){
-		for (j = 1; j <= i; j++){
-			if (C[i][k] == (C[j - 1][k - 1] + getKmediaFunc(node, j, i))){
-				Pr[PLen] = j;
-				Pr[PLen + 1] = i;
-				PLen = PLen + 2;
-				iNew = j - 1;
-				continue;
+	else {                                               //pblm=3 use k-mean
+		for (i = 0; i < length; i++) {
+			k = 0;
+			C[i][k] = getKmeanFunc(node, k, i);            // c[k][i];
+			for (k = 1; k < K; k++) {
+				minC = 0;
+				for (j = 1; j < i; j++) {
+					if (minC >= C[j - 1][k - 1]){            // optimization!!! compare minC and C[j - 1][k - 1]
+						minC = noZeroMin(minC, C[j - 1][k - 1] + getKmeanFunc(node, j, i));
+					}
+				}
+				C[i][k] = minC;
 			}
 		}
-		i = iNew;
+		i = length - 1;
+		int iNew = i;
+		for (k = K - 1; k >= 0; k--){
+			for (j = 1; j <= i; j++){
+				if (C[i][k] == (C[j - 1][k - 1] + getKmeanFunc(node, j, i))){
+					Pr[PLen] = j;
+					Pr[PLen + 1] = i;
+					PLen = PLen + 2;
+					iNew = j - 1;
+					continue;
+				}
+			}
+			i = iNew;
+		}
 	}
+
+	
+
 	return PLen;
 }
 

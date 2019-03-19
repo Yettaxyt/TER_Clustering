@@ -32,6 +32,9 @@ double noZeroMin(double A, double B);
 double getKmediaFunc(Node node[], int i, int iNew);
 void getKmedia(Node node[N], double c[N][N]);
 
+double getKmeanFunc(Node node[], int i, int iNew);
+void getKmean(Node node[N], double c[N][N]);
+
 double min(double a, double b);
 double max(double a, double b);
 

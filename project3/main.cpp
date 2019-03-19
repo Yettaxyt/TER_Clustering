@@ -28,9 +28,11 @@ int main(int argc, const char * argv[]) {
 		exit(1);
 	}
 	//    fileIn.getline(readBuffer, 100);    
-	fileIn >> readBuffer;
+	//fileIn >> readBuffer;
 	fileIn >> readBuffer;
 	int length = atof(readBuffer);
+	fileIn >> readBuffer;
+
 	for (i = 0; i < length; i++){
 		fileIn >> readBuffer;             //Read x coordinates 
 		tempX = atof(readBuffer);       //change type
@@ -54,7 +56,7 @@ int main(int argc, const char * argv[]) {
 	}
 
 
-	pLen = cluster2DParetoFront(p, node, k, 2, length);         //cluster2DParetoFront(int* Pr, Node node[], const int K, int pblm, const int length)
+	pLen = cluster2DParetoFront(p, node, k, 3, length);         //cluster2DParetoFront(int* Pr, Node node[], const int K, int pblm, const int length)
 
 	
 	for (i = 0; i < pLen; i++){
